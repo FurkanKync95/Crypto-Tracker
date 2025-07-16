@@ -21,3 +21,4 @@ Netlify ile GitHub reposuna bağlayarak otomatik deploy yapılabilir.
 - components/App.jsx — Ana bileşen  
 - pages/index.js — Ana sayfa  
 - tailwind.config.js, postcss.config.js — Stil yapılandırmaları  
+
