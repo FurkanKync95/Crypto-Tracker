@@ -95,27 +95,27 @@ const App = () => {
             </select>
             <button
               onClick={() => addToFavorites(selectedCoin)}
-              className="ml-2 mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+              className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
             >
               Add to Favorites
             </button>
           </div>
 
-          <div className="mb-6 p-4 border rounded shadow bg-white dark:bg-gray-800">
+          <section className="mb-6 p-4 border rounded shadow bg-white dark:bg-gray-800">
             <h2 className="text-xl font-semibold mb-2">Prediction</h2>
             <p>{prediction}</p>
-          </div>
+          </section>
 
-          <div className="mb-6 p-4 border rounded shadow bg-white dark:bg-gray-800">
+          <section className="mb-6 p-4 border rounded shadow bg-white dark:bg-gray-800">
             <h2 className="text-xl font-semibold mb-2">News</h2>
             <ul className="list-disc list-inside">
               {news.map((n, idx) => (
                 <li key={idx}>{n}</li>
               ))}
             </ul>
-          </div>
+          </section>
 
-          <div className="p-4 border rounded shadow bg-white dark:bg-gray-800">
+          <section className="p-4 border rounded shadow bg-white dark:bg-gray-800">
             <h2 className="text-xl font-semibold mb-2">Average Cost Calculator</h2>
             {averagePriceInputs.map((input, idx) => (
               <div key={idx} className="flex gap-2 mb-2">
@@ -146,3 +146,46 @@ const App = () => {
               className="ml-2 px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700"
             >
               Calculate
+            </button>
+            {averagePrice && (
+              <p className="mt-2 font-semibold">Average Buy Price: ${averagePrice}</p>
+            )}
+          </section>
+        </div>
+
+        <div className="md:w-1/3 flex flex-col gap-6">
+          <section className="p-4 border rounded shadow bg-white dark:bg-gray-800">
+            <h2 className="text-xl font-semibold mb-2">Favorites</h2>
+            <ul>
+              {favorites.map((f) => (
+                <li key={f}>
+                  <button
+                    className="text-blue-600 hover:underline"
+                    onClick={() => setSelectedCoin(f)}
+                  >
+                    {f}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          <section className="p-4 border rounded shadow bg-white dark:bg-gray-800">
+            <h2 className="text-xl font-semibold mb-2">Chart</h2>
+            <iframe
+              src={`https://s.tradingview.com/widgetembed/?symbol=BINANCE:${selectedCoin}&interval=60&theme=light&style=1&locale=en`}
+              width="100%"
+              height="400"
+              frameBorder="0"
+              allowTransparency="true"
+              scrolling="no"
+              title="TradingView Chart"
+            ></iframe>
+          </section>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default App;
