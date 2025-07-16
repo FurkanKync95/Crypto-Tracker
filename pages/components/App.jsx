@@ -80,6 +80,7 @@ const App = () => {
         <div className="md:w-2/3">
           <h1 className="text-3xl font-bold mb-4">Crypto Tracker</h1>
 
+          {/* Select Coin */}
           <div className="mb-4">
             <label className="block mb-2 font-semibold">Select Coin:</label>
             <select
@@ -101,11 +102,13 @@ const App = () => {
             </button>
           </div>
 
+          {/* Prediction */}
           <section className="mb-6 p-4 border rounded shadow bg-white dark:bg-gray-800">
             <h2 className="text-xl font-semibold mb-2">Prediction</h2>
             <p>{prediction}</p>
           </section>
 
+          {/* News */}
           <section className="mb-6 p-4 border rounded shadow bg-white dark:bg-gray-800">
             <h2 className="text-xl font-semibold mb-2">News</h2>
             <ul className="list-disc list-inside">
@@ -115,6 +118,7 @@ const App = () => {
             </ul>
           </section>
 
+          {/* Average Cost Calculator */}
           <section className="p-4 border rounded shadow bg-white dark:bg-gray-800">
             <h2 className="text-xl font-semibold mb-2">Average Cost Calculator</h2>
             {averagePriceInputs.map((input, idx) => (
@@ -123,46 +127,38 @@ const App = () => {
                   type="number"
                   placeholder="Quantity"
                   value={input.quantity}
-                  onChange={(e) => handleInputChange(idx, "quantity", e.target.value)}
+                  onChange={(e) => handleInputChange(idx, 'quantity', e.target.value)}
                   className="p-2 border rounded w-24"
                 />
                 <input
                   type="number"
                   placeholder="Price"
                   value={input.price}
-                  onChange={(e) => handleInputChange(idx, "price", e.target.value)}
+                  onChange={(e) => handleInputChange(idx, 'price', e.target.value)}
                   className="p-2 border rounded w-24"
                 />
               </div>
             ))}
-            <button
-              onClick={addNewInput}
-              className="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400"
-            >
+            <button onClick={addNewInput} className="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400">
               Add More
             </button>
-            <button
-              onClick={calculateAverage}
-              className="ml-2 px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700"
-            >
+            <button onClick={calculateAverage} className="ml-2 px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700">
               Calculate
             </button>
-            {averagePrice && (
-              <p className="mt-2 font-semibold">Average Buy Price: ${averagePrice}</p>
-            )}
+            {averagePrice && <p className="mt-2 font-semibold">Average Buy Price: ${averagePrice}</p>}
           </section>
+
+          {/* Favorites and Chart are in sidebar */}
         </div>
 
         <div className="md:w-1/3 flex flex-col gap-6">
+          {/* Favorites */}
           <section className="p-4 border rounded shadow bg-white dark:bg-gray-800">
             <h2 className="text-xl font-semibold mb-2">Favorites</h2>
             <ul>
               {favorites.map((f) => (
                 <li key={f}>
-                  <button
-                    className="text-blue-600 hover:underline"
-                    onClick={() => setSelectedCoin(f)}
-                  >
+                  <button className="text-blue-600 hover:underline" onClick={() => setSelectedCoin(f)}>
                     {f}
                   </button>
                 </li>
@@ -170,6 +166,7 @@ const App = () => {
             </ul>
           </section>
 
+          {/* Chart */}
           <section className="p-4 border rounded shadow bg-white dark:bg-gray-800">
             <h2 className="text-xl font-semibold mb-2">Chart</h2>
             <iframe
