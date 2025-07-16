@@ -11,8 +11,8 @@ const App = () => {
   const [favorites, setFavorites] = useState(['BTCUSDT', 'ETHUSDT']);
   const [news, setNews] = useState([]);
   const [prediction, setPrediction] = useState('Loading...');
-  const [averagePriceInputs, setAveragePriceInputs] = useState([{ quantity: '', price: '' }]);
-  const [averagePrice, setAveragePrice] = useState(null);
+  const [avgInputs, setAvgInputs] = useState([{ quantity: '', price: '' }]);
+  const [avgPrice, setAvgPrice] = useState(null);
 
   useEffect(() => {
     fetchNews(selectedCoin);
@@ -27,160 +27,108 @@ const App = () => {
     const rsi = Math.random() * 100;
     const volumeSignal = Math.random() > 0.5 ? 1 : -1;
     const supportSignal = Math.random() > 0.5 ? 1 : -1;
-
-    let score = 0;
-    if (rsi < 30) score += 30;
-    if (supportSignal === 1) score += 40;
-    if (volumeSignal === 1) score += 30;
-
-    if (score > 50) {
-      setPrediction(`${coin} has a ${score}% chance of going UP.`);
-    } else {
-      setPrediction(`${coin} has a ${100 - score}% chance of going DOWN.`);
-    }
+    let score = (rsi < 30 ? 30 : 0) + (supportSignal === 1 ? 40 : 0) + (volumeSignal === 1 ? 30 : 0);
+    if (score > 50) setPrediction(`${coin} has a ${score}% chance of going UP.`);
+    else setPrediction(`${coin} has a ${100 - score}% chance of going DOWN.`);
   };
 
   const addToFavorites = (coin) => {
-    if (!favorites.includes(coin)) {
-      setFavorites([...favorites, coin]);
-    }
+    if (!favorites.includes(coin)) setFavorites([...favorites, coin]);
   };
 
-  const handleInputChange = (index, field, value) => {
-    const newInputs = [...averagePriceInputs];
-    newInputs[index][field] = value;
-    setAveragePriceInputs(newInputs);
+  const handleInputChange = (i, field, val) => {
+    const newArr = [...avgInputs]; newArr[i][field] = val; setAvgInputs(newArr);
   };
 
-  const addNewInput = () => {
-    setAveragePriceInputs([...averagePriceInputs, { quantity: '', price: '' }]);
-  };
+  const addNewInput = () => setAvgInputs([...avgInputs, { quantity: '', price: '' }]);
 
   const calculateAverage = () => {
-    let totalQuantity = 0;
-    let totalCost = 0;
-
-    averagePriceInputs.forEach(({ quantity, price }) => {
-      const q = parseFloat(quantity);
-      const p = parseFloat(price);
-      if (!isNaN(q) && !isNaN(p)) {
-        totalQuantity += q;
-        totalCost += q * p;
-      }
+    let totalQ = 0, totalC = 0;
+    avgInputs.forEach(({ quantity, price }) => {
+      const q = parseFloat(quantity), p = parseFloat(price);
+      if (!isNaN(q) && !isNaN(p)) { totalQ += q; totalC += q * p; }
     });
-
-    if (totalQuantity > 0) {
-      setAveragePrice((totalCost / totalQuantity).toFixed(2));
-    }
+    if (totalQ > 0) setAvgPrice((totalC / totalQ).toFixed(2));
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white p-6">
-      <div className="flex flex-col md:flex-row justify-between gap-6">
-        <div className="md:w-2/3">
-          <h1 className="text-3xl font-bold mb-4">Crypto Tracker</h1>
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-100">
+      {/* Header */}
+      <header className="bg-white dark:bg-gray-800 shadow-md">
+        <div className="container mx-auto px-6 py-4 flex items-center justify-between">
+          <h1 className="text-2xl font-bold">Crypto Tracker</h1>
+          <nav className="space-x-4">
+            <button className="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded hover:bg-gray-300 dark:hover:bg-gray-600">Home</button>
+            <button className="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded hover:bg-gray-300 dark:hover:bg-gray-600">About</button>
+          </nav>
+        </div>
+      </header>
 
-          {/* Select Coin */}
-          <div className="mb-4">
-            <label className="block mb-2 font-semibold">Select Coin:</label>
-            <select
-              value={selectedCoin}
-              onChange={(e) => setSelectedCoin(e.target.value)}
-              className="p-2 border rounded w-full max-w-xs"
-            >
-              {coins.map((coin) => (
-                <option key={coin.symbol} value={coin.symbol}>
-                  {coin.name}
-                </option>
-              ))}
+      <main className="container mx-auto px-6 py-8 grid lg:grid-cols-4 gap-6">
+        {/* Sidebar Favorites */}
+        <aside className="lg:col-span-1 bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
+          <h2 className="text-lg font-semibold mb-4">Favorites</h2>
+          <ul className="space-y-2">
+            {favorites.map(f => (
+              <li key={f}>
+                <button onClick={() => setSelectedCoin(f)} className="w-full text-left px-3 py-2 bg-blue-50 dark:bg-gray-700 rounded hover:bg-blue-100 dark:hover:bg-gray-600">
+                  {f}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </aside>
+
+        {/* Main Content */}
+        <section className="lg:col-span-3 space-y-6">
+          {/* Coin Selector */}
+          <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow flex items-center space-x-4">
+            <label className="font-semibold">Select Coin:</label>
+            <select value={selectedCoin} onChange={e => setSelectedCoin(e.target.value)} className="p-2 border rounded bg-transparent">
+              {coins.map(c => <option key={c.symbol} value={c.symbol}>{c.name}</option>)}
             </select>
-            <button
-              onClick={() => addToFavorites(selectedCoin)}
-              className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-            >
-              Add to Favorites
-            </button>
+            <button onClick={() => addToFavorites(selectedCoin)} className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">Add to Favorites</button>
           </div>
 
-          {/* Prediction */}
-          <section className="mb-6 p-4 border rounded shadow bg-white dark:bg-gray-800">
+          {/* Prediction Card */}
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
             <h2 className="text-xl font-semibold mb-2">Prediction</h2>
-            <p>{prediction}</p>
-          </section>
+            <p className="text-gray-700 dark:text-gray-300">{prediction}</p>
+          </div>
 
-          {/* News */}
-          <section className="mb-6 p-4 border rounded shadow bg-white dark:bg-gray-800">
-            <h2 className="text-xl font-semibold mb-2">News</h2>
-            <ul className="list-disc list-inside">
-              {news.map((n, idx) => (
-                <li key={idx}>{n}</li>
-              ))}
+          {/* News Card */}
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+            <h2 className="text-xl font-semibold mb-2">Latest News</h2>
+            <ul className="list-disc ml-5 space-y-1">
+              {news.map((n,i) => <li key={i} className="text-gray-700 dark:text-gray-300">{n}</li>)}
             </ul>
-          </section>
+          </div>
 
           {/* Average Cost Calculator */}
-          <section className="p-4 border rounded shadow bg-white dark:bg-gray-800">
-            <h2 className="text-xl font-semibold mb-2">Average Cost Calculator</h2>
-            {averagePriceInputs.map((input, idx) => (
-              <div key={idx} className="flex gap-2 mb-2">
-                <input
-                  type="number"
-                  placeholder="Quantity"
-                  value={input.quantity}
-                  onChange={(e) => handleInputChange(idx, 'quantity', e.target.value)}
-                  className="p-2 border rounded w-24"
-                />
-                <input
-                  type="number"
-                  placeholder="Price"
-                  value={input.price}
-                  onChange={(e) => handleInputChange(idx, 'price', e.target.value)}
-                  className="p-2 border rounded w-24"
-                />
-              </div>
-            ))}
-            <button onClick={addNewInput} className="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400">
-              Add More
-            </button>
-            <button onClick={calculateAverage} className="ml-2 px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700">
-              Calculate
-            </button>
-            {averagePrice && <p className="mt-2 font-semibold">Average Buy Price: ${averagePrice}</p>}
-          </section>
-
-          {/* Favorites and Chart are in sidebar */}
-        </div>
-
-        <div className="md:w-1/3 flex flex-col gap-6">
-          {/* Favorites */}
-          <section className="p-4 border rounded shadow bg-white dark:bg-gray-800">
-            <h2 className="text-xl font-semibold mb-2">Favorites</h2>
-            <ul>
-              {favorites.map((f) => (
-                <li key={f}>
-                  <button className="text-blue-600 hover:underline" onClick={() => setSelectedCoin(f)}>
-                    {f}
-                  </button>
-                </li>
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+            <h2 className="text-xl font-semibold mb-4">Average Cost Calculator</h2>
+            <div className="space-y-2">
+              {avgInputs.map((inp,i) => (
+                <div key={i} className="flex space-x-2">
+                  <input type="number" placeholder="Qty" value={inp.quantity} onChange={e => handleInputChange(i,'quantity',e.target.value)} className="w-24 p-2 border rounded" />
+                  <input type="number" placeholder="Price" value={inp.price} onChange={e => handleInputChange(i,'price',e.target.value)} className="w-24 p-2 border rounded" />
+                </div>
               ))}
-            </ul>
-          </section>
+            </div>
+            <div className="mt-4 flex space-x-2">
+              <button onClick={addNewInput} className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Add More</button>
+              <button onClick={calculateAverage} className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700">Calculate</button>
+            </div>
+            {avgPrice && <p className="mt-4 font-semibold">Average Buy Price: ${avgPrice}</p>}
+          </div>
 
           {/* Chart */}
-          <section className="p-4 border rounded shadow bg-white dark:bg-gray-800">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
             <h2 className="text-xl font-semibold mb-2">Chart</h2>
-            <iframe
-              src={`https://s.tradingview.com/widgetembed/?symbol=BINANCE:${selectedCoin}&interval=60&theme=light&style=1&locale=en`}
-              width="100%"
-              height="400"
-              frameBorder="0"
-              allowTransparency="true"
-              scrolling="no"
-              title="TradingView Chart"
-            ></iframe>
-          </section>
-        </div>
-      </div>
+            <iframe src={`https://s.tradingview.com/widgetembed/?symbol=BINANCE:${selectedCoin}&interval=60&theme=light`} width="100%" height="400" frameBorder="0" scrolling="no" title="Chart"></iframe>
+          </div>
+        </section>
+      </main>
     </div>
   );
 };
