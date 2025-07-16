@@ -1,19 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 
 const coins = [
-  { symbol: "BTCUSDT", name: "Bitcoin" },
-  { symbol: "ETHUSDT", name: "Ethereum" },
-  { symbol: "WOJAKUSDT", name: "Wojak" },
+  { symbol: 'BTCUSDT', name: 'Bitcoin' },
+  { symbol: 'ETHUSDT', name: 'Ethereum' },
+  { symbol: 'WOJAKUSDT', name: 'Wojak' },
 ];
 
 const App = () => {
-  const [selectedCoin, setSelectedCoin] = useState("BTCUSDT");
-  const [favorites, setFavorites] = useState(["BTCUSDT", "ETHUSDT"]);
+  const [selectedCoin, setSelectedCoin] = useState('BTCUSDT');
+  const [favorites, setFavorites] = useState(['BTCUSDT', 'ETHUSDT']);
   const [news, setNews] = useState([]);
-  const [prediction, setPrediction] = useState("Loading...");
-  const [averagePriceInputs, setAveragePriceInputs] = useState([
-    { quantity: "", price: "" },
-  ]);
+  const [prediction, setPrediction] = useState('Loading...');
+  const [averagePriceInputs, setAveragePriceInputs] = useState([{ quantity: '', price: '' }]);
   const [averagePrice, setAveragePrice] = useState(null);
 
   useEffect(() => {
@@ -22,7 +20,6 @@ const App = () => {
   }, [selectedCoin]);
 
   const fetchNews = async (coin) => {
-    // Placeholder news fetch
     setNews([`Latest news about ${coin}`, `Market sentiment for ${coin}`]);
   };
 
@@ -56,7 +53,7 @@ const App = () => {
   };
 
   const addNewInput = () => {
-    setAveragePriceInputs([...averagePriceInputs, { quantity: "", price: "" }]);
+    setAveragePriceInputs([...averagePriceInputs, { quantity: '', price: '' }]);
   };
 
   const calculateAverage = () => {
@@ -82,6 +79,7 @@ const App = () => {
       <div className="flex flex-col md:flex-row justify-between gap-6">
         <div className="md:w-2/3">
           <h1 className="text-3xl font-bold mb-4">Crypto Tracker</h1>
+
           <div className="mb-4">
             <label className="block mb-2 font-semibold">Select Coin:</label>
             <select
@@ -103,21 +101,21 @@ const App = () => {
             </button>
           </div>
 
-          <section className="mb-6 p-4 border rounded shadow bg-white dark:bg-gray-800">
+          <div className="mb-6 p-4 border rounded shadow bg-white dark:bg-gray-800">
             <h2 className="text-xl font-semibold mb-2">Prediction</h2>
             <p>{prediction}</p>
-          </section>
+          </div>
 
-          <section className="mb-6 p-4 border rounded shadow bg-white dark:bg-gray-800">
+          <div className="mb-6 p-4 border rounded shadow bg-white dark:bg-gray-800">
             <h2 className="text-xl font-semibold mb-2">News</h2>
             <ul className="list-disc list-inside">
               {news.map((n, idx) => (
                 <li key={idx}>{n}</li>
               ))}
             </ul>
-          </section>
+          </div>
 
-          <section className="p-4 border rounded shadow bg-white dark:bg-gray-800">
+          <div className="p-4 border rounded shadow bg-white dark:bg-gray-800">
             <h2 className="text-xl font-semibold mb-2">Average Cost Calculator</h2>
             {averagePriceInputs.map((input, idx) => (
               <div key={idx} className="flex gap-2 mb-2">
@@ -148,46 +146,4 @@ const App = () => {
               className="ml-2 px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700"
             >
               Calculate
-            </button>
-            {averagePrice && (
-              <p className="mt-2 font-semibold">Average Buy Price: ${averagePrice}</p>
-            )}
-          </section>
-        </div>
-
-        <div className="md:w-1/3 flex flex-col gap-6">
-          <section className="p-4 border rounded shadow bg-white dark:bg-gray-800">
-            <h2 className="text-xl font-semibold mb-2">Favorites</h2>
-            <ul>
-              {favorites.map((f) => (
-                <li key={f}>
-                  <button
-                    className="text-blue-600 hover:underline"
-                    onClick={() => setSelectedCoin(f)}
-                  >
-                    {f}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </section>
-
-          <section className="p-4 border rounded shadow bg-white dark:bg-gray-800">
-            <h2 className="text-xl font-semibold mb-2">Chart</h2>
-            <iframe
-              src={`https://s.tradingview.com/widgetembed/?symbol=BINANCE:${selectedCoin}&interval=60&theme=light&style=1&locale=en`}
-              width="100%"
-              height="400"
-              frameBorder="0"
-              allowTransparency="true"
-              scrolling="no"
-              title="TradingView Chart"
-            ></iframe>
-          </section>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export default App;
+            <
